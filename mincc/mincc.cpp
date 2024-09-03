@@ -8,6 +8,8 @@ int main(int argc, char* argv[]) {
         std::cout << "Argument " << i << ": " << argv[i] << std::endl;
     }
 
+    // TODO Call lexer, then parser, then IRgen
+
     return 0;
 }
 
