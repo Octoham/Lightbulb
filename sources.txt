@@ -1,0 +1,3 @@
+https://github.com/StafaH/cpp-lexer
+https://llvm.org/docs/tutorial/MyFirstLanguageFrontend
+https://llvm.org/docs/CMake.html
