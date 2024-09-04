@@ -10,3 +10,4 @@ project ("Lightbulb")
 
 # Add subprojects
 add_subdirectory ("mincc")
+add_subdirectory ("Lightbulb")
