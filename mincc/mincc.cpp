@@ -24,7 +24,7 @@ std::string ReadFile(std::string path)
         return contents;
     }
     else {
-        std::cout << "Unable to open file";
+        std::cerr << "Unable to open file";
+        return 0;
     }
-    return 0;
 }
