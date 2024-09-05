@@ -5,6 +5,7 @@
 // Token types
 enum TokenType
 {
+    TOKEN_UNKNOWN,
     TOKEN_EOF,
     TOKEN_IDENTIFIER,
     TOKEN_KEYWORD,
@@ -20,3 +21,9 @@ struct Token {
     TokenType type;
     std::string value;
 };
+
+static std::string string_seperator = "\"";
+static std::string char_seperator = "\'";
+static std::string seperators[] = { "(", ")", "[", "]", "{", "}", ",", "", ":", "; "};
+static std::string operators[] = { "", "" };
+static std::string keywords[] = { "int", "void", "return" };
