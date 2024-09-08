@@ -24,9 +24,9 @@ Lexer::Lexer(std::string src) : sourceCode(src), position(0), line(1)
         }
     }
     std::string ocStr(operatorChars.begin(), operatorChars.end());
-    std::cout << ocStr << std::endl;
+    //std::cout << ocStr << std::endl;
     std::string scStr(seperatorChars.begin(), seperatorChars.end());
-    std::cout << scStr << std::endl;
+    //std::cout << scStr << std::endl;
 }
 
 std::vector<Token> Lexer::Lex()
@@ -73,8 +73,9 @@ void Lexer::FixLineEnd()
 	int pos = 0;
 	while ((pos = sourceCode.find("\r\n", pos)) != std::string::npos) {
 		sourceCode.replace(pos, 2, "\n");
-		pos += 1; // Move to the next character after the replacement
+		pos++; // Move to the next character after the replacement
 	}
+    //std::cout << "Fixed line endings" << std::endl;
 }
 
 std::string Lexer::GetSource()
@@ -84,7 +85,7 @@ std::string Lexer::GetSource()
 
 Token Lexer::GetNextToken() // TODO make more flexible esp with operators and make it safer lmao
 {
-    // Skip whitespace
+    // Skip whitespace and newline
     while (position < sourceCode.length() && isspace(sourceCode[position]))
     {
         if (sourceCode[position] == '\n')
@@ -132,13 +133,14 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
         }
 
         // Check if the operator is valid
+        // TODO check for smaller operators if there isn't an exact match
         if (StringInStringVector(operatorStr, operators))
         {
             return Token{ TOKEN_OPERATOR, operatorStr };
         }
         else
         {
-            // Yap about operator not found
+            // TODO lexer error when unknown operator
             return Token{ TOKEN_UNKNOWN, operatorStr };
         }
     }
@@ -154,13 +156,14 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
         }
 
         // Check if the seperator is valid
+        // TODO check for smaller operators if there isn't an exact match
         if (StringInStringVector(separatorStr, seperators))
         {
             return Token{ TOKEN_SEPERATOR, separatorStr };
         }
         else
         {
-            // Yap about seperator not found
+            // TODO lexer error when unknown seperator
             return Token{ TOKEN_UNKNOWN, separatorStr };
         }
     }
@@ -181,10 +184,13 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
     // Check for character literals
     if (sourceCode[position] == char_seperator[0])
     {
+        // TODO do more checks to ensure that there is a closing quote
+        // TODO implement escape characters
+        // TODO lexer error when char doesn't end
         position++;
         std::string charLiteralStr;
         charLiteralStr += sourceCode[position];
-        position++;
+        position++; 
         position++; // Skip the closing quote
 
         return Token{ TOKEN_CHAR_LITERAL, charLiteralStr };
@@ -193,6 +199,8 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
     // Check for string literals
     if (sourceCode[position] == string_seperator[0])
     {
+        // TODO implement escape characters
+        // TODO lexer error when string doesn't close
         position++;
         std::string stringLiteralStr;
         while (position < sourceCode.length() && sourceCode[position] != string_seperator[0])
@@ -206,6 +214,7 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
     }
 
     // If none of the above, return an empty token and augment position
+    // TODO lexer error when unknown character
     std::string unknownTokenString;
     unknownTokenString += sourceCode[position];
     position++;

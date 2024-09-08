@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
         }
         else
         {
+            //Lexer lexer = Lexer(ReadFile("D:\\repos\\Lightbulb\\testfiles\\mincc\\test2.c"));
             Lexer lexer = Lexer(ReadFile(argv[1]));
             lexer.FixLineEnd();
             vector<Token> tokens = lexer.Lex();
