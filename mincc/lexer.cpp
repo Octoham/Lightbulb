@@ -147,7 +147,7 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
     if (CharInCharVector(sourceCode[position], seperatorChars))
     {
         std::string separatorStr;
-        while (position < sourceCode.length() && CharInCharVector(sourceCode[position], operatorChars))
+        while (position < sourceCode.length() && CharInCharVector(sourceCode[position], seperatorChars))
         {
             separatorStr += sourceCode[position];
             position++;
