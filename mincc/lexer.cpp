@@ -1,9 +1,53 @@
 #include "lexer.h"
 
+Lexer::Lexer(std::string src) : sourceCode(src), position(0), line(1)
+{
+    // populate chars
+    for (int i = 0; i < std::size(operators); i++)
+    {
+        for (int j = 0; j < std::size(operators[i]); j++)
+        {
+            if (std::find(operatorChars.begin(), operatorChars.end(), operators[i][j]) == operatorChars.end()) // if char not in vector
+            {
+                operatorChars.push_back(operators[i][j]);
+            }
+        }
+    }
+    for (int i = 0; i < std::size(seperators); i++)
+    {
+        for (int j = 0; j < std::size(seperators[i]); j++)
+        {
+            if (std::find(seperatorChars.begin(), seperatorChars.end(), seperators[i][j]) == seperatorChars.end()) // if char not in vector
+            {
+                seperatorChars.push_back(seperators[i][j]);
+            }
+        }
+    }
+    std::string ocStr(operatorChars.begin(), operatorChars.end());
+    std::cout << ocStr << std::endl;
+    std::string scStr(seperatorChars.begin(), seperatorChars.end());
+    std::cout << scStr << std::endl;
+}
+
 std::vector<Token> Lexer::Lex()
 {
 	std::vector<Token> tokenArray = std::vector<Token>();
 
+    //std::cout << "Source Code btw: \n" << sourceCode << std::endl;
+    /*
+    {
+        std::cout << "Running tests!" << std::endl;
+        bool works = true;
+        if (!StringInStringArray("return", keywords)) works = false;
+        if (!StringInStringArray("+", operators)) works = false;
+        if (!StringInStringArray("]", seperators)) works = false;
+        if (StringInStringArray("a", keywords)) works = false;
+        if (StringInStringArray("a", operators)) works = false;
+        if (StringInStringArray("a", seperators)) works = false;
+        if (works) std::cout << "IT WORKS!!" << std::endl;
+        else std::cout << "IT DOESN'T WORK!!" << std::endl;
+    }
+    */
 	bool lexing = true;
 	while (lexing)
 	{
@@ -67,7 +111,7 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
         }
 
         // Check if the keyword is a reserved word
-        if (StringInStringArray(keyword, keywords))
+        if (StringInStringVector(keyword, keywords))
         {
             return Token{ TOKEN_KEYWORD, keyword };
         }
@@ -78,46 +122,47 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
     }
 
     // Check for operators
-    if (StringInStringArray(sourceCode[position], operators))
+    if (CharInCharVector(sourceCode[position], operatorChars))
     {
         std::string operatorStr;
-        operatorStr += sourceCode[position];
-        position++;
-
-        // Check for multi-character operators
-        if (sourceCode[position] == '=')
+        while (position < sourceCode.length() && CharInCharVector(sourceCode[position], operatorChars))
         {
             operatorStr += sourceCode[position];
             position++;
         }
-        else if (sourceCode[position] == '|')
-        {
-            if (sourceCode[position + 1] == '|')
-            {
-                operatorStr += sourceCode[position];
-                position += 2;
-            }
-        }
-        else if (sourceCode[position] == '&')
-        {
-            if (sourceCode[position + 1] == '&')
-            {
-                operatorStr += sourceCode[position];
-                position += 2;
-            }
-        }
 
-        return Token{ TOKEN_OPERATOR, operatorStr };
+        // Check if the operator is valid
+        if (StringInStringVector(operatorStr, operators))
+        {
+            return Token{ TOKEN_OPERATOR, operatorStr };
+        }
+        else
+        {
+            // Yap about operator not found
+            return Token{ TOKEN_UNKNOWN, operatorStr };
+        }
     }
 
     // Check for separators
-    if (StringInStringArray(sourceCode[position], seperators))
+    if (CharInCharVector(sourceCode[position], seperatorChars))
     {
         std::string separatorStr;
-        separatorStr += sourceCode[position];
-        position++;
+        while (position < sourceCode.length() && CharInCharVector(sourceCode[position], operatorChars))
+        {
+            separatorStr += sourceCode[position];
+            position++;
+        }
 
-        return Token{ TOKEN_SEPERATOR, separatorStr };
+        // Check if the seperator is valid
+        if (StringInStringVector(separatorStr, seperators))
+        {
+            return Token{ TOKEN_SEPERATOR, separatorStr };
+        }
+        else
+        {
+            // Yap about seperator not found
+            return Token{ TOKEN_UNKNOWN, separatorStr };
+        }
     }
 
     // Check for literals
@@ -164,7 +209,7 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
     std::string unknownTokenString;
     unknownTokenString += sourceCode[position];
     position++;
-    return Token{ TOKEN_UNKNOWN, unknownTokenString};
+    return Token{ TOKEN_UNKNOWN, unknownTokenString };
 }
 
 void Lexer::PrintTokens(std::vector<Token>& tokens) {
@@ -239,9 +284,9 @@ void Lexer::PrintTokens() {
     }
 }
 
-bool Lexer::StringInStringArray(char chr, std::string arr[])
+bool Lexer::CharInStringVector(char chr, std::vector<std::string> arr)
 {
-    for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+    for (int i = 0; i < std::size(arr); i++)
     {
         if (chr == arr[i][0])
         {
@@ -251,11 +296,23 @@ bool Lexer::StringInStringArray(char chr, std::string arr[])
     return false;
 }
 
-bool Lexer::StringInStringArray(std::string str, std::string arr[])
-{
-    for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+bool Lexer::StringInStringVector(std::string str, std::vector<std::string> arr)
+{   
+    for (int i = 0; i < std::size(arr); i++)
     {
         if (str == arr[i])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Lexer::CharInCharVector(char chr, std::vector<char> arr)
+{
+    for (int i = 0; i < std::size(arr); i++)
+    {
+        if (chr == arr[i])
         {
             return true;
         }

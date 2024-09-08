@@ -12,10 +12,11 @@ class Lexer
 	std::string sourceCode;
 	std::vector<Token> tokens;
 	Token GetNextToken();
-	bool StringInStringArray(std::string str, std::string* arr);
-	bool StringInStringArray(char chr, std::string* arr);
+	bool CharInStringVector(char chr, std::vector<std::string> arr);
+	bool StringInStringVector(std::string str, std::vector<std::string> arr);
+	bool CharInCharVector(char chr, std::vector<char> arr);
 public:
-	Lexer(std::string src) : sourceCode(src), position(0), line(1) {}
+	Lexer(std::string src);
 	std::vector<Token> Lex();
 	void FixLineEnd();
 	std::string GetSource();
