@@ -2,7 +2,7 @@
 
 using namespace token;
 
-Lexer::Lexer(std::string src) : sourceCode(src), position(0), line(1)
+Lexer::Lexer(std::string src, std::string path) : sourceCode(src), path(path), position(0), line(1)
 {
     // populate chars
     for (int i = 0; i < std::size(operators); i++)
@@ -342,4 +342,9 @@ bool Lexer::CharInCharVector(char chr, std::vector<char> arr)
         }
     }
     return false;
+}
+
+void Lexer::PrintError(std::string err)
+{
+    std::cout << path << "(" << line << ") Lexer error: " << err << std::endl;
 }
