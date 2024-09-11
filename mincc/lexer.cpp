@@ -1,5 +1,7 @@
 #include "lexer.h"
 
+using namespace token;
+
 Lexer::Lexer(std::string src) : sourceCode(src), position(0), line(1)
 {
     // populate chars
