@@ -134,17 +134,23 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
             position++;
         }
 
-        // Check if the operator is valid
-        // TODO check for smaller operators if there isn't an exact match
+        // Check if the operators is valid
         if (StringInStringVector(operatorStr, operators))
         {
             return Token{ TOKEN_OPERATOR, operatorStr };
         }
-        else
+        for (int i = operatorStr.length() - 1; i > 0; i--) // check for smaller operators
         {
-            // TODO lexer error when unknown operator
-            return Token{ TOKEN_UNKNOWN, operatorStr };
+            operatorStr = operatorStr.substr(0, i); // progressively trim the operatorStr to try to find a match
+            position--; // and setback position to not forget characters
+            if (StringInStringVector(operatorStr, operators))
+            {
+                return Token{ TOKEN_OPERATOR, operatorStr };
+            }
+
         }
+        // TODO lexer error when unknown operator
+        return Token{ TOKEN_UNKNOWN, operatorStr };
     }
 
     // Check for separators
@@ -158,16 +164,23 @@ Token Lexer::GetNextToken() // TODO make more flexible esp with operators and ma
         }
 
         // Check if the seperator is valid
-        // TODO check for smaller operators if there isn't an exact match
         if (StringInStringVector(separatorStr, seperators))
         {
             return Token{ TOKEN_SEPERATOR, separatorStr };
         }
-        else
+        for (int i = separatorStr.length() - 1; i > 0; i--) // check for smaller seperators
         {
-            // TODO lexer error when unknown seperator
-            return Token{ TOKEN_UNKNOWN, separatorStr };
+            separatorStr = separatorStr.substr(0, i); // progressively trim the seperatorStr to try to find a match
+            position--; // and setback position to not forget characters
+            if (StringInStringVector(separatorStr, seperators))
+            {
+                return Token{ TOKEN_SEPERATOR, separatorStr };
+            }
+            
         }
+        // TODO lexer error when unknown seperator
+        return Token{ TOKEN_UNKNOWN, separatorStr };
+
     }
 
     // Check for literals
