@@ -87,7 +87,7 @@ void LLVMCodeGenTest(string path)
 
     StringRef CPU = sys::getHostCPUName();
     SubtargetFeatures Feat;
-#if false
+#if false // only set to true on latest llvm
     StringMap<bool> HF = sys::getHostCPUFeatures();
     if (HF.empty())
 #else
