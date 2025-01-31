@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 // Token types
 enum TokenType
@@ -26,7 +27,7 @@ namespace token
 {
     static std::string string_seperator = "\"";
     static std::string char_seperator = "\'";
-    static std::vector<std::string> seperators = { "(", ")", "[", "]", "{", "}", ",", "..", ":", ";" };
+    static std::vector<std::string> seperators = { "(", ")", "[", "]", "{", "}", ",", ".", ":", ";" };
     static std::vector<char> seperatorChars;
     static std::vector<std::string> operators = { "=", "+", "-", "*", "/", "%", "++", "--", "<", ">", "<=", ">=", "==", "!=" };
     static std::vector<char> operatorChars;
