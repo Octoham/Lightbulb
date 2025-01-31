@@ -85,7 +85,7 @@ std::string Lexer::GetSource()
 	return sourceCode;
 }
 
-Token Lexer::GetNextToken() // TODO make more flexible esp with operators and make it safer lmao
+Token Lexer::GetNextToken() // TODO make it safer lmao
 {
     // Skip whitespace and newline
     while (position < sourceCode.length() && isspace(sourceCode[position]))
