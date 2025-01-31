@@ -80,6 +80,23 @@ void Lexer::FixLineEnd()
     //std::cout << "Fixed line endings" << std::endl;
 }
 
+void Lexer::Preprocess()
+{
+    int pos = 0;
+    while (pos < sourceCode.size())
+    {
+        if (sourceCode[pos] == '#')
+        {
+            while (sourceCode[pos] != '\n')
+            {
+                sourceCode.replace(pos, 1, " ");
+                pos++;
+            }
+        }
+        pos++;
+    }
+}
+
 std::string Lexer::GetSource()
 {
 	return sourceCode;
@@ -273,39 +290,7 @@ void Lexer::PrintTokens(std::vector<Token>& tokens) {
 }
 
 void Lexer::PrintTokens() {
-    for (Token& token : tokens) {
-        std::cout << "Token Type: ";
-        switch (token.type) {
-        case TOKEN_EOF:
-            std::cout << "End of File";
-            break;
-        case TOKEN_IDENTIFIER:
-            std::cout << "Identifier";
-            break;
-        case TOKEN_KEYWORD:
-            std::cout << "Keyword";
-            break;
-        case TOKEN_OPERATOR:
-            std::cout << "Operator";
-            break;
-        case TOKEN_SEPERATOR:
-            std::cout << "Separator";
-            break;
-        case TOKEN_LITERAL:
-            std::cout << "Literal";
-            break;
-        case TOKEN_CHAR_LITERAL:
-            std::cout << "Character Literal";
-            break;
-        case TOKEN_STRING_LITERAL:
-            std::cout << "String Literal";
-            break;
-        default:
-            std::cout << "Unknown";
-            break;
-        }
-        std::cout << ", Value: " << token.value << std::endl;
-    }
+    PrintTokens(tokens);
 }
 
 bool Lexer::CharInStringVector(char chr, std::vector<std::string> arr)

@@ -21,6 +21,7 @@ public:
 	Lexer(std::string src, std::string path);
 	std::vector<Token> Lex();
 	void FixLineEnd();
+	void Preprocess();
 	std::string GetSource();
 	void PrintTokens(std::vector<Token>& tokens);
 	void PrintTokens();

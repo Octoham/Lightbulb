@@ -46,9 +46,11 @@ int main(int argc, char* argv[]) {
         }
         else
         {
-            //Lexer lexer = Lexer(ReadFile("D:\\repos\\Lightbulb\\testfiles\\mincc\\test2.c"));
+            //argv[1] = "D:\\repos\\Lightbulb\\testfiles\\mincc\\test2.c";
+            //Lexer lexer = Lexer(ReadFile("D:\\repos\\Lightbulb\\testfiles\\mincc\\test1.c"), "D:\\repos\\Lightbulb\\testfiles\\mincc\\test1.c");
             Lexer lexer = Lexer(ReadFile(argv[1]), argv[1]);
             lexer.FixLineEnd();
+            lexer.Preprocess();
             vector<Token> tokens = lexer.Lex();
             lexer.PrintTokens(tokens);
             Parser parser = Parser(tokens);
