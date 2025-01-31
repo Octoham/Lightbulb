@@ -25,8 +25,11 @@ project ("Lightbulb")
 #target_link_libraries(mincc ${llvm_libs})
 #message(STATUS "Current LLVM libs are: ${llvm_libs}")
 
-
-set(LLVM_DIR "D:/llvm/llvm-18.1.8-windows-amd64-msvc17-msvcrt/lib/cmake/llvm") # set llvm cmake path
+if(WIN32)
+  set(LLVM_DIR "D:/llvm/llvm-18.1.8-windows-amd64-msvc17-msvcrt/lib/cmake/llvm") # set llvm cmake path
+else()
+  set(LLVM_DIR "/usr/lib/llvm-15/cmake")
+endif()
 
 # Find LLVM
 find_package(LLVM REQUIRED CONFIG)
