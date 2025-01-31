@@ -13,261 +13,37 @@ void Parser::advance()
     // Check if we've reached the end of the token list
     if (tokenIndex < tokens.size())
     {
-        // Get the current token
-        currentToken = tokens[tokenIndex];
         // Move to the next token
         tokenIndex++;
     }
-    else
-    {
-        // If we've reached the end of the token list, set the current token to EOF
-        currentToken.type = TOKEN_EOF;
-    }
+    // Literally do nothing if we're already at the end
 }
 
 // Function to check if the current token matches a specific type
 bool Parser::match(TokenType type)
 {
     // Return true if the current token matches the specified type
-    return currentToken.type == type;
+    return tokens[tokenIndex].type == type;
 }
 
 // Function to check if the current token matches a specific value
 bool Parser::match(std::string value)
 {
     // Return true if the current token matches the specified value
-    return currentToken.value == value;
-}
-
-// Function to parse a factor (e.g., identifier, literal)
-Node* Parser::parseFactor()
-{
-    // Check if the current token is an identifier
-    if (match(TOKEN_IDENTIFIER))
-    {
-        // Create a new IdentifierNode
-        IdentifierNode* id = new IdentifierNode(currentToken.value);
-        // Advance to the next token
-        advance();
-        // Return the IdentifierNode
-        return id;
-    }
-    // Check if the current token is a literal
-    else if (match(TOKEN_LITERAL))
-    {
-        // Create a new LiteralNode
-        LiteralNode* literal = new LiteralNode(std::stoi(currentToken.value));
-        // Advance to the next token
-        advance();
-        // Return the LiteralNode
-        return literal;
-    }
-    else
-    {
-        // Handle error: unexpected token
-        return nullptr;
-    }
-}
-
-// Function to parse a term (e.g., factor, binary operation)
-Node* Parser::parseTerm()
-{
-    // Parse a factor
-    Node* left = parseFactor();
-    // Check if the current token is a binary operator
-    while (match(TOKEN_OPERATOR) && (currentToken.value == "*" || currentToken.value == "/"))
-    {
-        // Get the operator
-        std::string op = currentToken.value;
-        // Advance to the next token
-        advance();
-        // Parse the right operand
-        Node* right = parseFactor();
-        // Create a new BinaryOpNode
-        left = new BinaryOpNode(left, op, right);
-    }
-    // Return the parsed term
-    return left;
-}
-
-// Function to parse an expression (e.g., term, binary operation)
-Node* Parser::parseExpression()
-{
-    // Parse a term
-    Node* left = parseTerm();
-    // Check if the current token is a binary operator
-    while (match(TOKEN_OPERATOR) && (currentToken.value == "+" || currentToken.value == "-"))
-    {
-        // Get the operator
-        std::string op = currentToken.value;
-        // Advance to the next token
-        advance();
-        // Parse the right operand
-        Node* right = parseTerm();
-        // Create a new BinaryOpNode
-        left = new BinaryOpNode(left, op, right);
-    }
-    // Return the parsed expression
-    return left;
-}
-
-// Function to parse a statement (e.g., expression, return, block)
-Node* Parser::parseStatement()
-{
-    // Check if the current token is an identifier followed by a "("
-    if (match(TOKEN_IDENTIFIER) && tokens[tokenIndex].value == "(")
-    {
-        // Function call
-        IdentifierNode* id = new IdentifierNode(currentToken.value);
-        // Advance to the next token
-        advance();
-        // Skip the "("
-        advance();
-        // Parse the arguments
-        std::vector<Node*> args;
-        while (!match(TOKEN_SEPERATOR) || currentToken.value != ")")
-        {
-            // Parse an expression
-            Node* arg = parseExpression();
-            // Add the argument to the list
-            args.push_back(arg);
-            // Check if the current token is a comma
-            if (match(TOKEN_SEPERATOR) && currentToken.value == ",")
-            {
-                // Advance to the next token
-                advance();
-            }
-        }
-        // Skip the ")"
-        advance();
-        // Create a new FuncCallNode
-        return new FuncCallNode(id, args);
-    }
-    // Check if the current token is a return statement
-    else if (match(TOKEN_KEYWORD) && currentToken.value == "return")
-    {
-        // Return statement
-        // Advance to the next token
-        advance();
-        // Parse an expression
-        Node* expr = parseExpression();
-        // Create a new ReturnNode
-        return new ReturnNode(expr);
-    }
-    // Check if the current token is a variable declaration
-    else if (match(TOKEN_KEYWORD) && currentToken.value == "int")
-    {
-        // Variable declaration
-        // Advance to the next token
-        advance();
-        // Parse an identifier
-        IdentifierNode* id = new IdentifierNode(currentToken.value);
-        // Advance to the next token
-        advance();
-        // Create a new VarDeclNode
-        return new VarDeclNode(Type_Int32, id);
-    }
-    else
-    {
-        // Handle error: unexpected token
-        return nullptr;
-    }
-}
-
-// Function to parse a block (e.g., multiple statements)
-Node* Parser::parseBlock()
-{
-    // Create a list to store the statements
-    std::vector<Node*> stmts;
-    // Parse statements until we reach the end of the token list
-    while (!match(TOKEN_EOF))
-    {
-        // Parse a statement
-        Node* stmt = parseStatement();
-        // Add the statement to the list
-        stmts.push_back(stmt);
-    }
-    // Create a new BlockStmtNode
-    return new BlockStmtNode(stmts);
-}
-
-// Function to parse a function declaration
-Node* Parser::parseFunctionDeclaration()
-{
-    // Function declaration
-    VarType returnType = Type_Int32;
-    // Advance to the next token
-    advance();
-    // Parse an identifier
-    IdentifierNode* id = new IdentifierNode(currentToken.value);
-    // Advance to the next token
-    advance();
-    // Skip the "("
-    advance();
-    // Parse the parameters
-    std::vector<VarDeclNode*> params;
-    while (!match(TOKEN_SEPERATOR) || currentToken.value != ")")
-    {
-        // Parse a variable declaration
-        VarDeclNode* param = new VarDeclNode(Type_Int32, new IdentifierNode(currentToken.value));
-        // Add the parameter to the list
-        params.push_back(param);
-        // Advance to the next token
-        advance();
-        // Check if the current token is a comma
-        if (match(TOKEN_SEPERATOR) && currentToken.value == ",")
-        {
-            // Advance to the next token
-            advance();
-        }
-    }
-    // Skip the ")"
-    advance();
-    // Parse the block
-    BlockStmtNode* block = dynamic_cast<BlockStmtNode*>(parseBlock());
-    // Create a new FuncDeclNode
-    return new FuncDeclNode(returnType, id, params, block);
-}
-
-// Function to parse a variable declaration
-Node* Parser::parseVariableDeclaration()
-{
-    // Variable declaration
-    VarType type = Type_Int32;
-    // Advance to the next token
-    advance();
-    // Parse an identifier
-    IdentifierNode* id = new IdentifierNode(currentToken.value);
-    // Advance to the next token
-    advance();
-    // Create a new VarDeclNode
-    return new VarDeclNode(type, id);
+    return tokens[tokenIndex].value == value;
 }
 
 // Function to parse the entire token list
 Node* Parser::parse()
 {
-    // Check if the current token is a function declaration
-    if (match(TOKEN_KEYWORD) && currentToken.value == "int")
-    {
-        // Check if the next token is a "("
-        if (tokens[tokenIndex + 1].value == "(")
-        {
-            // Parse a function declaration
-            return parseFunctionDeclaration();
-        }
-        else
-        {
-            // Parse a variable declaration
-            return parseVariableDeclaration();
-        }
-    }
-    else
-    {
-        // Parse a block
-        return parseBlock();
-    }
+    RootNode* root = new RootNode({});
+
+    // start parsing here
+
+    treeRoot = root;
+    return root;
 }
+
 
 // Function to print the Abstract Syntax Tree (AST)
 void Parser::printAST(Node* node, int indent)
@@ -369,6 +145,17 @@ void Parser::printAST(Node* node, int indent)
         for (auto stmt : blockStmt->stmts)
         {
             printAST(stmt, indent + 1);
+        }
+    }
+    // Check if the node is a RootNode
+    else if (auto root = dynamic_cast<RootNode*>(node))
+    {
+        // Print the root node
+        std::cout << "Root" << std::endl;
+        // Recursively print the statements
+        for (auto cnt : root->cnts)
+        {
+            printAST(cnt, indent + 1);
         }
     }
 }

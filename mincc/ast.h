@@ -18,6 +18,16 @@ public:
     virtual ~Node() = default;
 };
 
+class RootNode : public Node
+{
+public:
+    // Constructor to initialize the statements in the block
+    RootNode(std::vector<Node*> cnts) : cnts(cnts) {}
+
+    // The contents of the RootNode
+    std::vector<Node*> cnts;
+};
+
 // Node representing a block statement (e.g., "{ x = 5; y = 10; }")
 class BlockStmtNode : public Node
 {
