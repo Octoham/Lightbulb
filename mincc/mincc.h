@@ -26,4 +26,4 @@ int main(int argc, char* argv[]);
 
 std::string ReadFile(std::string path);
 
-void LLVMCodeGenTest(std::string path);
+void LLVMCodeGenTest(std::string path, std::string triple = "");

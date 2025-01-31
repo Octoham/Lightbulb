@@ -13,9 +13,32 @@ int main(int argc, char* argv[]) {
 
     if (argc > 1)
     {
-        if (argv[1] == "test")
+        if ((string)argv[1] == "test")
         {
-            LLVMCodeGenTest(argv[1]);
+            if (argc > 2)
+            {
+                LLVMCodeGenTest(argv[1], argv[2]);
+            }
+            else
+            {
+                LLVMCodeGenTest(argv[1]);
+            }
+        }
+        else if ((string)argv[1] == "version")
+        {
+            cout << "mincc Compiler" << endl;
+            cout << "Version: test0.0.1" << endl;
+            cout << "Owner: Octoham" << endl;
+            cout << "Description:" << endl;
+            cout << "  mincc is a minimalistic C compiler designed to be compatible with the Unified Compiler Framework (UCF)." << endl;
+            cout << "  It provides a lightweight and flexible way to compile C code, allowing for interoperability and multi-language projects." << endl;
+            cout << "  mincc is part of the UCF ecosystem, enabling seamless integration with other languages and compilers." << endl;
+            cout << "Functionalities:" << endl;
+            cout << "  - Lexing: Tokenization of source code" << endl;
+            cout << "  - Parsing: Construction of Abstract Syntax Tree (AST)" << endl;
+            //cout << "  - IR Generation: Generation of Intermediate Representation (IR) code" << endl;
+            //cout << "  - Code Generation: Generation of machine code" << endl;
+            cout << "Copyright Octoham" << endl;
         }
         else
         {
@@ -42,12 +65,12 @@ string ReadFile(string path)
         return contents;
     }
     else {
-        cerr << "Unable to open file";
-        return 0;
+        cerr << "Unable to open file\n";
+        return "";
     }
 }
 
-void LLVMCodeGenTest(string path)
+void LLVMCodeGenTest(string path, string triple)
 {
     LLVMContext Context; // make context
     Module* M = new Module("test_module", Context); // make test module
@@ -72,7 +95,16 @@ void LLVMCodeGenTest(string path)
     InitializeAllAsmParsers();
     InitializeAllAsmPrinters();
 
-    string TT = sys::getDefaultTargetTriple(); // set target triple to our current machine
+    string TT;
+    if (triple == "")
+    {
+        TT = sys::getDefaultTargetTriple(); // set target triple to our current machine
+    }
+    else
+    {
+        TT = triple;
+    }
+    
     M->setTargetTriple(TT); // use that target triple for the module
 
     string E;
@@ -98,7 +130,8 @@ void LLVMCodeGenTest(string path)
             Feat.AddFeature(F.first(), F.second); // list every single feature
     string Features = Feat.getString(); // actually get features
 
-    cout << "Current triple : " << T->getName() << endl;
+    cout << "Current triple : " << TT << endl;
+    cout << "Current target : " << T->getName() << endl;
     cout << "Current CPU: " << CPU.str() << endl;
     cout << "Currently enabled features: " << Features << endl;
 
