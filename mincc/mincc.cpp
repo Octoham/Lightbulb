@@ -38,7 +38,11 @@ int main(int argc, char* argv[]) {
             cout << "  - Parsing: Construction of Abstract Syntax Tree (AST)" << endl;
             //cout << "  - IR Generation: Generation of Intermediate Representation (IR) code" << endl;
             //cout << "  - Code Generation: Generation of machine code" << endl;
-            cout << "Copyright Octoham" << endl;
+            cout << "Copyright (c) Octoham. All rights reserved." << endl;
+            cout << "Licensed under the Mozilla Public License, version 2.0 (the \"License\");" << endl;
+            cout << "you may not use this file except in compliance with the License." << endl;
+            cout << "You may obtain a copy of the License at" << endl;
+            cout << "http://mozilla.org/MPL/2.0/" << endl;
         }
         else
         {
