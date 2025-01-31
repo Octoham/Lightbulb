@@ -47,6 +47,9 @@ int main(int argc, char* argv[]) {
             lexer.FixLineEnd();
             vector<Token> tokens = lexer.Lex();
             lexer.PrintTokens(tokens);
+            Parser parser = Parser(tokens);
+            Node* root = parser.parse();
+            parser.printAST(root);
         }
     }
     // TODO Call lexer, then parser, then IRgen
