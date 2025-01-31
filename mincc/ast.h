@@ -114,8 +114,8 @@ class FuncDeclNode : public Node
 {
 public:
     // Constructor to initialize the return type, function name, and parameters
-    FuncDeclNode(VarType returnType, IdentifierNode* id, std::vector<VarDeclNode*>, BlockStmtNode* block)
-        : returnType(returnType), id(id), params(params), block(block) {}
+    FuncDeclNode(VarType returnType, IdentifierNode* id, std::vector<VarDeclNode*>)
+        : returnType(returnType), id(id), params(params) {}
 
     // The return type of the function
     VarType returnType;
@@ -125,9 +125,20 @@ public:
 
     // The parameters of the function
     std::vector<VarDeclNode*> params;
+};
+
+// Node representing a function definition (e.g., "int foo(int x, int y) { return x + y; } ")
+class FuncDefNode : public Node
+{
+public:
+    // Constructor to initialize the head and the body
+    FuncDefNode(FuncDeclNode* head, BlockStmtNode* body) : head(head), body(body) {}
+
+    // The head of the function
+    FuncDeclNode* head;
 
     // The body of the function
-    BlockStmtNode* block;
+    BlockStmtNode* body;
 };
 
 // Node representing a return statement (e.g., "return x;")

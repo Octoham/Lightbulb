@@ -27,6 +27,12 @@ private:
     // Function to check if the current token matches a specific value
     bool match(std::string value);
 
+    // Function to parse the next statement
+    Node* parseStatement();
+
+    // Function for errors lmao
+    void PrintError(std::string err);
+
 public:
     // Constructor to initialize the parser with tokens
     Parser(std::vector<Token> tokens);

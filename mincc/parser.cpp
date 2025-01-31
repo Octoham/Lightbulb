@@ -38,10 +38,23 @@ Node* Parser::parse()
 {
     RootNode* root = new RootNode({});
 
-    // start parsing here
+    while (tokenIndex < tokens.size())
+    {
+        Node* node = parseStatement();
+        if (node != nullptr)
+        {
+            root->cnts.push_back(node);
+        }
+    }
 
     treeRoot = root;
     return root;
+}
+
+// Function to parse the next statement
+Node* Parser::parseStatement()
+{
+    // Start here!
 }
 
 
@@ -105,9 +118,16 @@ void Parser::printAST(Node* node, int indent)
         {
             printAST(param, indent + 1);
         }
-        // Recursively print the block
-        std::cout << "Function Block:" << std::endl;
-        printAST(funcDecl->block, indent + 1);
+    }
+    // Check if the node is a FuncDefNode
+    else if (auto funcDef = dynamic_cast<FuncDefNode*>(node))
+    {
+        // Print the function definition
+        std::cout << "Function Definition" << std::endl;
+        // Recursively print the head
+        printAST(funcDef->head, indent + 1);
+        // Recursively print the body
+        printAST(funcDef->body, indent + 1);
     }
     // Check if the node is a ReturnNode
     else if (auto returnStmt = dynamic_cast<ReturnNode*>(node))
@@ -167,4 +187,9 @@ void Parser::printAST()
     Node* root = parse();
     // Print the AST
     printAST(root);
+}
+
+void Parser::PrintError(std::string err)
+{
+    std::cout << tokens[tokenIndex].value << "(" << "pos:" << tokenIndex << ") Parser error: " << err << std::endl;
 }
