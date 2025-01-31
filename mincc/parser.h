@@ -45,4 +45,8 @@ public:
 
     // Function to parse the AST contained in the Parser
     void printAST();
+
+    // Function to get the VarType of a string
+    VarType stringToVarType(std::string str);
+
 };

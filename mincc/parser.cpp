@@ -189,6 +189,19 @@ void Parser::printAST()
     printAST(root);
 }
 
+VarType Parser::stringToVarType(std::string str)
+{
+    if (str == "int")
+    {
+        return VarType::Type_Int32;
+    }
+    else if (str == "void")
+    {
+        return VarType::Type_Void;
+    }
+    return VarType();
+}
+
 void Parser::PrintError(std::string err)
 {
     std::cout << tokens[tokenIndex].value << "(" << "pos:" << tokenIndex << ") Parser error: " << err << std::endl;

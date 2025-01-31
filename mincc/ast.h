@@ -7,7 +7,9 @@
 enum VarType
 {
     // 32-bit integer type
-    Type_Int32
+    Type_Int32,
+    // No type ig idk
+    Type_Void,
 };
 
 // Base node class for the Abstract Syntax Tree (AST)
